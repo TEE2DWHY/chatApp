@@ -1,7 +1,7 @@
 import React from "react";
 import SideBar from "../components/sideBar";
 import Chat from "../components/chat";
-const Home = () => {
+const User = () => {
   return (
     <div className="home">
       <div className="container">
@@ -12,4 +12,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default User;

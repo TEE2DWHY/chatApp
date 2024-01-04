@@ -2,17 +2,46 @@
 import "../styles/style.scss";
 // images
 import addAvatar from "../assets/images/img.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { handleChange } from "../utils/handleChange";
+import { register } from "../config/url";
 
 const Register = () => {
-  const [err, setErr] = useState(false);
+  const router = useNavigate();
+
+  const initialFormData = {
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  };
+
+  const [formData, setFormData] = useState(initialFormData);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const displayName = event.target[0].value;
-    const email = event.target[1].value;
-    const password = event.target[2].value;
-    const file = event.target[3].files[0];
+    if (formData.confirmPassword !== formData.password) {
+      ("Password and Confirm password does not match.");
+      return;
+    }
+    try {
+      const response = await fetch(register, {
+        method: POST,
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      console.log(data);
+      setFormData(initialFormData);
+      router("/");
+      // const { confirmPassword, password, ...user } = formData;
+      // console.log(user);
+    } catch (error) {
+      console.log(error.message);
+    }
   };
   return (
     <>
@@ -23,9 +52,38 @@ const Register = () => {
             <span>Register</span>
           </div>
           <div className="form-inputs">
-            <input type="text" placeholder="display name" />
-            <input type="email" placeholder="email" required />
-            <input type="password" placeholder="password" required />
+            <input
+              type="text"
+              placeholder="display name"
+              name="name"
+              value={formData.name}
+              required
+              onChange={(event) => handleChange(event, setFormData, formData)}
+            />
+            <input
+              type="email"
+              placeholder="email"
+              name="email"
+              value={formData.email}
+              required
+              onChange={(event) => handleChange(event, setFormData, formData)}
+            />
+            <input
+              type="password"
+              placeholder="password"
+              name="password"
+              value={formData.password}
+              required
+              onChange={(event) => handleChange(event, setFormData, formData)}
+            />
+            <input
+              type="password"
+              placeholder="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              required
+              onChange={(event) => handleChange(event, setFormData, formData)}
+            />
             <input type="file" id="file" style={{ display: "none" }} />
             <label htmlFor="file">
               <img src={addAvatar} alt="add-avatar" />
@@ -33,9 +91,8 @@ const Register = () => {
             </label>
           </div>
           <button className="form-button">Sign Up</button>
-          {err && <span>Something Went Wrong</span>}
-          <Link to="/login">
-            <p className="login-text">Do you have an account login?</p>
+          <Link to="/">
+            <p className="login-text">Do you have an account?. Login</p>
           </Link>
         </form>
       </div>

@@ -1,33 +1,30 @@
-import { useEffect, useState } from "react";
-import { getMessage, socketFn } from "../utils/script";
+import { useState } from "react";
 
 const Message = () => {
   const [currentMessage, setCurrentMessage] = useState("");
+  const isOwner = true; // Assume the current user is the owner for demonstration
 
-  useEffect(() => {
-    const socket = socketFn();
+  const getMessageTime = () => {
+    const currentTime = new Date();
+    const hour = currentTime.getHours();
+    const minute = currentTime.getMinutes();
+    return `${hour}:${minute}`;
+  };
 
-    socket.on("chat-message", () => {
-      const updatedMessage = getMessage();
-      setCurrentMessage(updatedMessage);
-    });
-  }, []);
   return (
     <>
-      <div className="message owner">
+      <div className={`message ${isOwner ? "owner" : "sender"}`}>
         <div className="message-info">
           <img
             src="https://images.pexels.com/photos/1391498/pexels-photo-1391498.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2"
             alt=""
           />
-          <span>Just Now</span>
+          <span>{getMessageTime()}</span>
         </div>
         <div className="message-content">
-          <p>{currentMessage}</p>
-          <img
-            src="https://images.pexels.com/photos/1642228/pexels-photo-1642228.jpeg?auto=compress&cs=tinysrgb&w=800"
-            alt=""
-          />
+          <p className={isOwner ? "owner-content" : "sender-content"}>
+            {currentMessage}
+          </p>
         </div>
       </div>
     </>

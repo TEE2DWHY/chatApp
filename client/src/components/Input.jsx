@@ -1,10 +1,7 @@
-import { useEffect, useState } from "react";
-import { socketFn } from "../utils/script";
+import { useState } from "react";
 
 const Input = () => {
   const [info, setInfo] = useState("");
-
-  const socket = socketFn();
 
   const handleChange = (event) => {
     const { value } = event.target;
@@ -13,13 +10,7 @@ const Input = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    socket.emit("send-chat-message", info);
-    setInfo("");
   };
-
-  useEffect(() => {
-    socketFn();
-  }, []);
 
   return (
     <>
