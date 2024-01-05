@@ -1,3 +1,4 @@
 const baseUrl = import.meta.env.API_URL;
 
-export const register = `${baseUrl}/api/v1/register`;
+export const register = `${baseUrl}/auth/register`;
+export const login = `${baseUrl}/auth/login`;

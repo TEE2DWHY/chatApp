@@ -1,20 +1,27 @@
 const express = require("express");
 const app = express();
-const http = require("http").createServer(app);
-const io = require("socket.io")(http, {
-  cors: {
-    origin: "*",
-  },
-});
+require("dotenv").config();
+const cors = require("cors");
+const { connect } = require("mongoose");
+const notFound = require("./middlewares/notFound");
+const authRouter = require("./routers/auth");
 
-io.on("connection", (socket) => {
-  //   socket.emit("chat-message", "Hello World");
-  socket.on("send-chat-message", (message) => {
-    // console.log(message);
-    socket.broadcast.emit("chat-message", message);
-  });
-});
+// middleware(s)
+app.use(express.json());
+app.use(cors());
+app.use("/auth", authRouter);
+app.use(notFound);
 
-http.listen(3000, () => {
-  console.log(`Server running on port 3000`);
-});
+const port = process.env.PORT;
+const start = async () => {
+  try {
+    await connect(process.env.MONGO_URI);
+    app.listen(port, () => {
+      console.log(`Server running on port: ${port}`);
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+start();

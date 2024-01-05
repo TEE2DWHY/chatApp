@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "../styles/style.scss";
 import { handleChange } from "../utils/handleChange";
+import { login } from "../config/url";
 
 const Login = () => {
   const router = useNavigate();
@@ -12,11 +13,21 @@ const Login = () => {
 
   const [formData, setFormData] = useState(initialFormData);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(formData);
-    setFormData(initialFormData);
-    router("/messages");
+    try {
+      const response = await fetch(login, {
+        method: POST,
+        "content-type": "application/json",
+        body: JSON.stringify(formData),
+      });
+      const data = await response.json();
+      console.log(data);
+      setFormData(initialFormData);
+      router("/messages");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
