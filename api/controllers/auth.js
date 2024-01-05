@@ -17,7 +17,7 @@ const register = asyncWrapper(async (req, res) => {
     });
   }
   const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = await User.create({ password: hashedPassword, ...req.body });
+  const newUser = await User.create({ password: hashedPassword, ...data });
   res.status(StatusCodes.CREATED).json({
     message: `User with Username: ${newUser.userName} Is Created Successfully.`,
   });
