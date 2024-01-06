@@ -15,6 +15,10 @@ const userSchema = new mongoose.Schema({
     required: [true, "Please Provide Password"],
     minlength: [8, "Password Should be At Least Eight Letters."],
   },
+  image: {
+    type: String,
+    required: [true, "Please Provide Profile Picture"],
+  },
 });
 
 module.exports = mongoose.model("User", userSchema);
