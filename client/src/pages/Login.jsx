@@ -17,7 +17,7 @@ const Login = () => {
     event.preventDefault();
     try {
       const response = await fetch(login, {
-        method: POST,
+        method: "POST",
         "content-type": "application/json",
         body: JSON.stringify(formData),
       });

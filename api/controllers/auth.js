@@ -10,14 +10,13 @@ const register = asyncWrapper(async (req, res) => {
       message: `Data Field Cannot be Empty.`,
     });
   }
-  const { password, confirmPassword } = req.body;
-  if (confirmPassword !== password) {
+  if (data.confirmPassword !== data.password) {
     return res.status(StatusCodes.CREATED).json({
       message: `Password and ConfirmPassword Must Match.`,
     });
   }
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = await User.create({ password: hashedPassword, ...data });
+  const hashedPassword = await bcrypt.hash(data.password, 10);
+  const newUser = await User.create({ ...data, password: hashedPassword });
   res.status(StatusCodes.CREATED).json({
     message: `User with Username: ${newUser.userName} Is Created Successfully.`,
   });

@@ -5,14 +5,17 @@ const cors = require("cors");
 const { connect } = require("mongoose");
 const notFound = require("./middlewares/notFound");
 const authRouter = require("./routers/auth");
+const errorHandler = require("./middlewares/errorHandler");
 
 // middleware(s)
 app.use(express.json());
 app.use(cors());
 app.use("/auth", authRouter);
+app.use(errorHandler);
 app.use(notFound);
 
 const port = process.env.PORT;
+
 const start = async () => {
   try {
     await connect(process.env.MONGO_URI);
@@ -24,4 +27,5 @@ const start = async () => {
   }
 };
 
+// start connection
 start();

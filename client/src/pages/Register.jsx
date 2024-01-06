@@ -18,16 +18,17 @@ const Register = () => {
   };
 
   const [formData, setFormData] = useState(initialFormData);
+  const [err, setErr] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (formData.confirmPassword !== formData.password) {
-      ("Password and Confirm password does not match.");
+      alert("Password and Confirm password does not match.");
       return;
     }
     try {
       const response = await fetch(register, {
-        method: POST,
+        method: "POST",
         headers: {
           "content-type": "application/json",
         },
@@ -41,6 +42,7 @@ const Register = () => {
       // console.log(user);
     } catch (error) {
       console.log(error.message);
+      setErr(error.message);
     }
   };
   return (
@@ -91,6 +93,7 @@ const Register = () => {
             </label>
           </div>
           <button className="form-button">Sign Up</button>
+          <p className="error-message">{err}</p>
           <Link to="/">
             <p className="login-text">Do you have an account?. Login</p>
           </Link>
