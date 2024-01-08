@@ -13,6 +13,8 @@ const Login = () => {
   };
 
   const [formData, setFormData] = useState(initialFormData);
+  // image input does not exist.
+  const [imageURL, setImageURL] = useState(null);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -22,7 +24,7 @@ const Login = () => {
       setFormData(initialFormData);
       router("/messages");
     } catch (error) {
-      console.error(error.message);
+      console.log(error);
     }
   };
 
@@ -41,7 +43,9 @@ const Login = () => {
               required
               name="email"
               value={formData.email}
-              onChange={(event) => handleChange(event, setFormData, formData)}
+              onChange={(event) =>
+                handleChange(event, setFormData, setImageURL, formData)
+              }
             />
             <input
               type="password"
@@ -49,7 +53,9 @@ const Login = () => {
               required
               name="password"
               value={formData.password}
-              onChange={(event) => handleChange(event, setFormData, formData)}
+              onChange={(event) =>
+                handleChange(event, setFormData, setImageURL, formData)
+              }
             />
           </div>
           <button type="submit" className="form-button">

@@ -95,7 +95,29 @@
     width: 80%;
     font-weight: bold;
     cursor: pointer;
-    // font-size: 16px;
+
+    .disabled-cursor {
+      cursor: not-allowed;
+    }
+
+    .loading {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 4px solid rgba(0, 0, 0, 0.1);
+      border-left-color: #fff;
+      animation: spin 1s linear infinite;
+      margin: auto;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
   }
 
   label {
@@ -116,6 +138,9 @@
 
   .error-message {
     color: rgb(244, 13, 13);
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
   }
 }
 

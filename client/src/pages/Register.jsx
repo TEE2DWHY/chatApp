@@ -7,6 +7,7 @@ import { useState } from "react";
 import { register } from "../config/url";
 import axios from "axios";
 import { handleChange } from "../utils/handleChange";
+import Spinner from "../assets/icons/Spinner";
 
 const Register = () => {
   const router = useNavigate();
@@ -22,24 +23,22 @@ const Register = () => {
   const [formData, setFormData] = useState(initialFormData);
   const [err, setErr] = useState("");
   const [imageURL, setImageURL] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     if (formData.confirmPassword !== formData.password) {
-      alert("Password and Confirm password do not match.");
+      setErr("Password and Confirm password do not match.");
       return;
     }
-
+    if (imageURL === null) {
+      setErr("Please Provide Image");
+      return;
+    }
+    setIsLoading(true);
     try {
-      const data = new FormData();
-      data.append("userName", formData.userName);
-      data.append("email", formData.email);
-      data.append("password", formData.password);
-      data.append("confirmPassword", formData.confirmPassword);
-      data.append("image", formData.image);
-
-      const response = await axios.post(register, data, {
+      const response = await axios.post(register, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -47,10 +46,13 @@ const Register = () => {
       console.log(response);
       setFormData(initialFormData);
       setImageURL(null);
+      setIsSubmitted(true);
+      setIsLoading(false);
       router("/");
     } catch (error) {
       console.log(error);
       setErr(error.response.data.message);
+      setIsLoading(false);
     }
   };
 
@@ -72,6 +74,7 @@ const Register = () => {
               onChange={(event) =>
                 handleChange(event, setFormData, setImageURL, formData)
               }
+              onFocus={() => setErr(null)}
             />
             <input
               type="email"
@@ -82,6 +85,7 @@ const Register = () => {
               onChange={(event) =>
                 handleChange(event, setFormData, setImageURL, formData)
               }
+              onFocus={() => setErr(null)}
             />
             <input
               type="password"
@@ -92,6 +96,7 @@ const Register = () => {
               onChange={(event) =>
                 handleChange(event, setFormData, setImageURL, formData)
               }
+              onFocus={() => setErr(null)}
             />
             <input
               type="password"
@@ -102,6 +107,7 @@ const Register = () => {
               onChange={(event) =>
                 handleChange(event, setFormData, setImageURL, formData)
               }
+              onFocus={() => setErr(null)}
             />
             <input
               type="file"
@@ -111,6 +117,7 @@ const Register = () => {
               onChange={(event) =>
                 handleChange(event, setFormData, setImageURL, formData)
               }
+              onFocus={() => setErr(null)}
             />
             <div>
               {imageURL ? (
@@ -137,7 +144,12 @@ const Register = () => {
               )}
             </div>
           </div>
-          <button className="form-button">SignUp</button>
+          <button
+            className={`form-button ${isSubmitted ? "disabled-cursor" : ""}`}
+            disabled={isSubmitted}
+          >
+            {isLoading ? <Spinner /> : isSubmitted ? "Submitted" : "Sign Up"}
+          </button>
           <p className="error-message">{err}</p>
           <Link to="/">
             <p className="login-text">Do you have an account?. Login</p>
