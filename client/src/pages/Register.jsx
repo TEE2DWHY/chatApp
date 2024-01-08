@@ -144,13 +144,14 @@ const Register = () => {
               )}
             </div>
           </div>
+          <p className="error-message">{err}</p>
           <button
             className={`form-button ${isSubmitted ? "disabled-cursor" : ""}`}
+            type="submit"
             disabled={isSubmitted}
           >
             {isLoading ? <Spinner /> : isSubmitted ? "Submitted" : "Sign Up"}
           </button>
-          <p className="error-message">{err}</p>
           <Link to="/">
             <p className="login-text">Do you have an account?. Login</p>
           </Link>

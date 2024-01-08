@@ -4,6 +4,9 @@ import "../styles/style.scss";
 import { handleChange } from "../utils/handleChange";
 import { login } from "../config/url";
 import axios from "axios";
+import Spinner from "../assets/icons/Spinner";
+import { sessionStorageUtil } from "../utils/sessionStorage";
+
 const Login = () => {
   const router = useNavigate();
 
@@ -13,18 +16,37 @@ const Login = () => {
   };
 
   const [formData, setFormData] = useState(initialFormData);
-  // image input does not exist.
-  const [imageURL, setImageURL] = useState(null);
+  const [formState, setFormState] = useState({
+    imageURL: null, // image input does not exist tho.
+    err: "",
+    isLoading: false,
+    isSubmitted: false,
+  });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setFormState({
+      ...formState,
+      isLoading: true,
+    });
     try {
       const response = await axios.post(login, formData);
-      console.log("Login response:", response);
+      sessionStorageUtil.setItem("name", response.data.name);
+      sessionStorageUtil.setItem("profileImg", response.data.image);
+      sessionStorageUtil.setItem("loggedIn", true);
       setFormData(initialFormData);
+      setFormState({
+        ...formState,
+        isSubmitted: true,
+        isLoading: false,
+      });
       router("/messages");
     } catch (error) {
-      console.log(error);
+      setFormState({
+        ...formState,
+        isLoading: false,
+        err: error.response.data.message,
+      });
     }
   };
 
@@ -44,7 +66,12 @@ const Login = () => {
               name="email"
               value={formData.email}
               onChange={(event) =>
-                handleChange(event, setFormData, setImageURL, formData)
+                handleChange(
+                  event,
+                  setFormData,
+                  setFormState({ ...formState, imageURL: null }),
+                  formData
+                )
               }
             />
             <input
@@ -54,12 +81,30 @@ const Login = () => {
               name="password"
               value={formData.password}
               onChange={(event) =>
-                handleChange(event, setFormData, setImageURL, formData)
+                handleChange(
+                  event,
+                  setFormData,
+                  setFormState({ ...formState, imageURL: null }),
+                  formData
+                )
               }
             />
           </div>
-          <button type="submit" className="form-button">
-            Log in
+          <p className="error-message">{formState.err}</p>
+          <button
+            className={`form-button ${
+              formState.isSubmitted ? "disabled-cursor" : ""
+            }`}
+            type="submit"
+            disabled={formState.isSubmitted}
+          >
+            {formState.isLoading ? (
+              <Spinner />
+            ) : formState.isSubmitted ? (
+              "Submitted"
+            ) : (
+              "Sign Up"
+            )}
           </button>
           <Link to="/register">
             <p className="login-text">Don't you have an account? Register</p>

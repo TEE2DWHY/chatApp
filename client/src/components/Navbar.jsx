@@ -1,5 +1,20 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { sessionStorageUtil } from "../utils/sessionStorage";
+
 const Navbar = () => {
+  const router = useNavigate();
+  const [userDetails, setUserDetails] = useState({
+    name: "",
+    image: "",
+  });
+  useEffect(() => {
+    setUserDetails({
+      name: sessionStorageUtil.getItem("name"),
+      image: sessionStorageUtil.getItem("profileImg"),
+    });
+  }, []);
+
   return (
     <>
       <nav>
@@ -7,12 +22,16 @@ const Navbar = () => {
           <span className="logo">Speak Swift</span>
         </Link>
         <div className="user">
-          <img
-            src="https://images.pexels.com/photos/2880979/pexels-photo-2880979.jpeg?auto=compress&cs=tinysrgb&w=800"
-            alt="user-img"
-          />
-          <span>John Norton</span>
-          <button>Logout</button>
+          <img src={userDetails.image} alt="user-img" />
+          <span>{userDetails.name}</span>
+          <button
+            onClick={() => {
+              sessionStorageUtil.deleteItem("name", "profileImg", "loggedIn");
+              router("/");
+            }}
+          >
+            Logout
+          </button>
         </div>
       </nav>
     </>
