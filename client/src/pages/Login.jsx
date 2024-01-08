@@ -3,9 +3,10 @@ import { Link, useNavigate } from "react-router-dom";
 import "../styles/style.scss";
 import { handleChange } from "../utils/handleChange";
 import { login } from "../config/url";
-
+import axios from "axios";
 const Login = () => {
   const router = useNavigate();
+
   const initialFormData = {
     email: "",
     password: "",
@@ -16,17 +17,12 @@ const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(login, {
-        method: "POST",
-        "content-type": "application/json",
-        body: JSON.stringify(formData),
-      });
-      const data = await response.json();
-      console.log(data);
+      const response = await axios.post(login, formData);
+      console.log("Login response:", response);
       setFormData(initialFormData);
       router("/messages");
     } catch (error) {
-      console.error(error);
+      console.error(error.message);
     }
   };
 
