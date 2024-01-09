@@ -1,11 +1,7 @@
 const mongoose = require("mongoose");
 
-const connect = async (url) => {
-  try {
-    await mongoose.connect(url);
-  } catch (err) {
-    console.log(err);
-  }
+const connect = (url) => {
+  return mongoose.connect(url);
 };
 
 module.exports = connect;

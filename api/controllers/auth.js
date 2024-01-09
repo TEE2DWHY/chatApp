@@ -6,39 +6,33 @@ const cloudinary = require("../utils/cloudinary");
 
 const register = asyncWrapper(async (req, res) => {
   let result;
-  try {
-    const data = { ...req.body };
-    if (Object.keys(data).length === 0) {
-      return res.status(StatusCodes.CREATED).json({
-        message: `Data Field Cannot be Empty.`,
-      });
-    }
-    if (data.confirmPassword !== data.password) {
-      return res.status(StatusCodes.CREATED).json({
-        message: `Password and ConfirmPassword Must Match.`,
-      });
-    }
-    const { path } = req.file;
-    if (!path) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        message: "Please Upload Provide Picture.",
-      });
-    }
-    result = await cloudinary.uploader.upload(path);
-    const hashedPassword = await bcrypt.hash(data.password, 10);
-    const newUser = await User.create({
-      ...data,
-      password: hashedPassword,
-      image: result.secure_url,
+  const data = { ...req.body };
+  if (Object.keys(data).length === 0) {
+    return res.status(StatusCodes.CREATED).json({
+      message: `Data Field Cannot be Empty.`,
     });
-    res.status(StatusCodes.CREATED).json({
-      message: `User with Username: ${newUser.userName} Is Created Successfully.`,
-    });
-  } catch (error) {
-    if (result) {
-      await cloudinary.uploader.destroy(result.public_id);
-    }
   }
+  if (data.confirmPassword !== data.password) {
+    return res.status(StatusCodes.CREATED).json({
+      message: `Password and ConfirmPassword Must Match.`,
+    });
+  }
+  const { path } = req.file;
+  if (!path) {
+    return res.status(StatusCodes.BAD_REQUEST).json({
+      message: "Please Upload Provide Picture.",
+    });
+  }
+  result = await cloudinary.uploader.upload(path);
+  const hashedPassword = await bcrypt.hash(data.password, 10);
+  const newUser = await User.create({
+    ...data,
+    password: hashedPassword,
+    image: result.secure_url,
+  });
+  res.status(StatusCodes.CREATED).json({
+    message: `User with Username: ${newUser.userName} Is Created Successfully.`,
+  });
 });
 
 const login = asyncWrapper(async (req, res) => {
@@ -54,8 +48,10 @@ const login = asyncWrapper(async (req, res) => {
       message: "Incorrect password",
     });
   }
-  res.status(StatusCodes.CREATED).json({
+  res.status(StatusCodes.OK).json({
     message: "Login is Successful.",
+    name: user.userName,
+    image: user.image,
   });
 });
 
